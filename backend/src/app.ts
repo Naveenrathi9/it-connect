@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import db from './config/db';
+import { RowDataPacket } from "mysql2";
 
 // Load environment variables
 dotenv.config();
@@ -211,15 +212,15 @@ app.put('/api/asset-returns/:id', async (req: Request, res: Response) => {
     );
     
     // Get the updated record
-    const [updated] = await db.query(
-      'SELECT * FROM it_asset_returns WHERE id = ?', 
-      [req.params.id]
-    );
-    
-    res.json({
-      message: 'Asset return updated successfully',
-      data: updated[0]
-    });
+    const [updated] = await db.query<RowDataPacket[]>(
+  'SELECT * FROM it_asset_returns WHERE id = ?', 
+  [req.params.id]
+);
+
+res.json({
+  message: 'Asset return updated successfully',
+  data: updated[0]
+});
   } catch (error: any) {
     console.error('Error updating asset return:', error);
     
